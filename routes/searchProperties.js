@@ -30,7 +30,7 @@ module.exports = async (event, context, callback) => {
     };
 
 
-    const attomData = await axios.get(`https://slipstream.homejunction.com/ws/listings/get?${moreQueryStrings}`, header)
+    return await axios.get(`https://slipstream.homejunction.com/ws/listings/get?${moreQueryStrings}`, header)
         .then(async res => {
             let listing = [];
             await forEach(res.data.result.listings, async (each) => {
@@ -59,46 +59,46 @@ module.exports = async (event, context, callback) => {
                 }
                 listing.push(each)
             });
-            return okResponse({
-                listing: listing
-            })
+            if (listing) {
+                return okResponse({
+                    listing: listing
+                })
+            } else {
+                return await axios.get(`https://slipstream.homejunction.com/ws/listings/search?pageNumber=${pageNumber}&pageSize=50${moreQueryStrings}`, header)
+                    .then(async res => {
+                        let listing = [];
+                        await forEach(res.data.result.listings, async (each) => {
+                            listing.push({
+                                id: each.id,
+                                systemId: each.systemId,
+                                market: each.market,
+                                geoType: each.geoType,
+                                coordinates: each.coordinates,
+                                listPrice: each.listPrice,
+                                beds: each.beds,
+                                address: eachpropertiesListing.address,
+                                images: each.images,
+                                baths: each.baths,
+                                lotSize: each.lotSize,
+                                listingType: each.listingType,
+                                daysOnHJI: each.daysOnHJI
+                            })
+                        });
+                        return okResponse({
+                            currentPage: pageNumber,
+                            totalPages: Math.ceil(res.data.result.total / 50),
+                            total: res.data.result.total,
+                            listing: listing
+                        })
+                    }).catch(() => {
+                        return errorResponse();
+                    });
+            }
+
         }).catch((err) => {
             return errorResponse();
         })
 
-    if (!attomData) {
-        return await axios.get(`https://slipstream.homejunction.com/ws/listings/search?pageNumber=${pageNumber}&pageSize=50${moreQueryStrings}`, header)
-            .then(async res => {
-                let listing = [];
-                await forEach(res.data.result.listings, async (each) => {
-                    listing.push({
-                        id: each.id,
-                        systemId: each.systemId,
-                        market: each.market,
-                        geoType: each.geoType,
-                        coordinates: each.coordinates,
-                        listPrice: each.listPrice,
-                        beds: each.beds,
-                        address: eachpropertiesListing.address,
-                        images: each.images,
-                        baths: each.baths,
-                        lotSize: each.lotSize,
-                        listingType: each.listingType,
-                        daysOnHJI: each.daysOnHJI
-                    })
-                });
-                return okResponse({
-                    currentPage: pageNumber,
-                    totalPages: Math.ceil(res.data.result.total / 50),
-                    total: res.data.result.total,
-                    listing: listing
-                })
-            }).catch(() => {
-                return errorResponse();
-            })
-    }else{
-        return attomData;
-    }
 
     // Use this code if you don't use the http event with the LAMBDA-PROXY integration
     // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
