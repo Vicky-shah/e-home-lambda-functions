@@ -23,6 +23,8 @@ module.exports = async (event, context, callback) => {
     const header = {
         headers: HOME_JUNCTION_HEADERS
     };
+    console.log('moreQueryStrings',moreQueryStrings);
+    console.info('moreQueryStrings',moreQueryStrings);
     const attomResponse = await axios.get(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/expandedprofile?address=${(each.stdAddress.deliveryLine ? each.stdAddress.deliveryLine : "")}${(each.stdAddress.city ? ("," + each.stdAddress.city) : "")}${(each.stdAddress.state ? ("," + each.stdAddress.state) : "")}`, header2)
         .then(async res => {
             let listing = [];
@@ -58,7 +60,7 @@ module.exports = async (event, context, callback) => {
             return errorResponse();
         })
 
-
+console.log('attomResponse',attomResponse);
     if (!attomResponse) {
         return await axios.get(`https://slipstream.homejunction.com/ws/listings/search?pageNumber=${pageNumber}&pageSize=50${moreQueryStrings}`, header)
         .then(async res => {
