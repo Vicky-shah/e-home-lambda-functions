@@ -34,36 +34,16 @@ module.exports = async (event, context, callback) => {
     return await axios.get(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/detail?address=${keyword}`, header2)
         .then(async res => {
             let listing = [];
-            await forEach(res.data.property, async (each) => {
-                if (each.address.oneLine) {
-                    await axios.get(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/expandedprofile?address=${(each.address.line1 ? each.address.line1 : "")}${(each.address.locality ? ("," + each.address.locality) : "")}${(each.address.countrySubd ? ("," + each.address.countrySubd) : "")}`, header2)
-                        .then(async ress => {
-                            if (ress.data.property && ress.data.property[0]) {
-                                each = { ...each, attomData: ress.data.property[0] }
-                            }
-                        })
-                        .catch(err => {
-                            console.log('error',err);
-                        })
-                    await axios.get(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/saleshistory/expandedhistory?address=${(each.address.line1 ? each.address.line1 : "")}${(each.address.locality ? ("," + each.address.locality) : "")}${(each.address.countrySubd ? ("," + each.address.countrySubd) : "")}`, header2)
-                        .then(async ress => {
-                            if (ress.data.property && ress.data.property[0]) {
-                                each = { ...each, attomData: { ...each.attomData, ...ress.data.property[0] } }
-                            }
-                        }).catch(err => {
-                            console.log('error',err);
-                        })
-                }
-                listing.push(each);
-                return okResponse({
-                    listing: listing
-                })
+            listing.push(res);
+            return okResponse({
+                listing: listing
             })
-        }).catch(err => {
+        })
+        .catch(err => {
             return [
-                console.log('error',err),
-                console.info('error',err),
-                console.warn('error',err),
+                console.log('error', err),
+                console.info('error', err),
+                console.warn('error', err),
                 errorResponse()
             ]
         });
