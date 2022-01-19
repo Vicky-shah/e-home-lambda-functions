@@ -41,7 +41,7 @@ module.exports = async (event, context, callback) => {
                             }
                         })
                         .catch(err => {
-
+                            console.log('error',err);
                         })
                     await axios.get(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/saleshistory/expandedhistory?address=${(each.stdAddress.deliveryLine ? each.stdAddress.deliveryLine : "")}${(each.stdAddress.city ? ("," + each.stdAddress.city) : "")}${(each.stdAddress.state ? ("," + each.stdAddress.state) : "")}`, header2)
                         .then(async ress => {
@@ -49,7 +49,7 @@ module.exports = async (event, context, callback) => {
                                 each = { ...each, attomData: { ...each.attomData, ...ress.data.property[0] } }
                             }
                         }).catch(err => {
-
+                            console.log('error',err);
                         })
                 }
                 listing.push(each);
