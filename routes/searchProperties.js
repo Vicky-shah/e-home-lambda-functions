@@ -6,32 +6,16 @@ const { okResponse, errorResponse } = require('../utils/HttpResponse')
 const { HOME_JUNCTION_HEADERS, ATTOM_DATA_HEADERS } = require('../utils/constants')
 const { forEach } = require('../utils/functions')
 
-const lambdaLocal = require("lambda-local");
 
 module.exports = async (event, context, callback) => {
-    const pageNumber = event.queryStringParameters && event.queryStringParameters.pageNumber ? event.queryStringParameters.pageNumber : '1';
-    const keyword = event.queryStringParameters && event.queryStringParameters.keyword ? event.queryStringParameters.keyword : ' ';
-    if (event.queryStringParameters && event.queryStringParameters.pageNumber) {
-        delete event.queryStringParameters.pageNumber;
-    }
-    if (event.queryStringParameters && event.queryStringParameters.pageSize) {
-        delete event.queryStringParameters.pageSize;
-    }
-    let moreQueryStrings = "";
-    if (event.queryStringParameters) {
-        Object.keys(event.queryStringParameters).forEach(each => {
-            moreQueryStrings += "&" + each + "=" + event.queryStringParameters[each];
-        })
-    }
-    const header = {
-        headers: HOME_JUNCTION_HEADERS
-    };
-
+    // const keyword = event.queryStringParameters && event.queryStringParameters.keyword ? event.queryStringParameters.keyword : ' ';
+    
+    console.log('event.queryStringParameters.keyword---',event.queryStringParameters.keyword);
     const header2 = {
         headers: ATTOM_DATA_HEADERS
     };
 
-    return await axios.get(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/detail?address=${keyword}`, header2)
+    return await axios.get(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/detail?address=${event.queryStringParameters.keyword}`, header2)
         .then((res) => {
             let listing = [];
             listing.push(res);
