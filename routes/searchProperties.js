@@ -9,8 +9,8 @@ const { forEach } = require('../utils/functions')
 
 module.exports = async (event, context, callback) => {
     // const keyword = event.queryStringParameters && event.queryStringParameters.keyword ? event.queryStringParameters.keyword : ' ';
-    
-    console.log('event.queryStringParameters.keyword---',event.queryStringParameters.keyword);
+
+    console.log('event.queryStringParameters.keyword---', event.queryStringParameters.keyword);
     const header2 = {
         headers: ATTOM_DATA_HEADERS
     };
@@ -18,7 +18,7 @@ module.exports = async (event, context, callback) => {
     return await axios.get(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/detail?address=${event.queryStringParameters.keyword}`, header2)
         .then((res) => {
             return okResponse({
-                listing: res
+                listing: res.data
             })
         })
         .catch(err => {
