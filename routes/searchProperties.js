@@ -29,7 +29,7 @@ module.exports = async (event, context, callback) => {
         headers: ATTOM_DATA_HEADERS
     };
 
-    return await axios.get(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/detail?address=${keyword}`, header)
+    return await axios.get(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/detail?address=${keyword}`, header2)
     .then(async res => {
         let listing = [];
         if (res.data.property && res.data.property[0]) {
