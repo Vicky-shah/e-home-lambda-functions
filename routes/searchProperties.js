@@ -17,10 +17,8 @@ module.exports = async (event, context, callback) => {
 
     return await axios.get(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/detail?address=${event.queryStringParameters.keyword}`, header2)
         .then((res) => {
-            let listing = [];
-            listing.push(res);
             return okResponse({
-                listing: listing
+                listing: res
             })
         })
         .catch(err => {
