@@ -26,7 +26,7 @@ module.exports = async (event, context, callback) => {
             let listing = [];
             await forEach(res.data.property, async (each) => {
                 if (each.stdAddress) {
-                    await axios.get(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/expandedprofile?address=${(each.address.line1 ? each.address.line1 : "")}${(each.address.locality ? ("," + each.address.locality) : "")}${(each.address.countrySubd ? ("," + each.address.countrySubd) : "")}`, header2)
+                    await axios.get(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/expandedprofile?address1=${(each.address.line1 ? each.address.line1 : "")}&address2=${(each.address.line2 ? each.address.line2 : "")}`, header2)
                         .then(async ress => {
                             if (ress.data.property && ress.data.property[0]) {
                                 each = { ...each, attomData: ress.data.property[0] }
@@ -35,7 +35,7 @@ module.exports = async (event, context, callback) => {
                         .catch(err => {
 
                         })
-                    await axios.get(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/saleshistory/expandedhistory?address=${(each.address.line1 ? each.address.line1 : "")}${(each.address.locality ? ("," + each.address.locality) : "")}${(each.address.countrySubd ? ("," + each.address.countrySubd) : "")}`, header2)
+                    await axios.get(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/saleshistory/expandedhistory?address1=${(each.address.line1 ? each.address.line1 : "")}&address2=${(each.address.line2 ? each.address.line2 : "")}`, header2)
                         .then(async ress => {
                             if (ress.data.property && ress.data.property[0]) {
                                 each = { ...each, attomData: { ...each.attomData, ...ress.data.property[0] } }
@@ -43,7 +43,7 @@ module.exports = async (event, context, callback) => {
                         }).catch(err => {
 
                         })
-                    await axios.get(`https://slipstream.homejunction.com/ws/listings/get?${moreQueryStrings}`, header)
+                    await axios.get(`https://slipstream.homejunction.com/ws/listings/get&id=${id}&images=true&market=cjmls`, header)
                         .then(async res => {
                             if (res.data.result.listings && res.data.result.listings[0]) {
                                 each = { ...each, slipStreem: { ...each.attomData, ...res.data.result.listings[0]} }
