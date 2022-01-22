@@ -25,7 +25,7 @@ module.exports = async (event, context, callback) => {
         .then(async res => {
             let listing = [];
             await forEach(res.data.property, async (each) => {
-                if (each.stdAddress) {
+                if (each.address.line1) {
                     await axios.get(`https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/expandedprofile?address1=${(each.address.line1 ? each.address.line1 : "")}&address2=${(each.address.line2 ? each.address.line2 : "")}`, header2)
                         .then(async ress => {
                             if (ress.data.property && ress.data.property[0]) {
